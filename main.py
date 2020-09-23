@@ -1,5 +1,6 @@
 from typing import Optional
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 app = FastAPI()
 
 import uvicorn
@@ -18,6 +19,60 @@ config_dict['language'] = 'ru'
 #тут находится ключ с сайта OpenWeatherMap
 #поместить его в переменную окружения
 owm = pyowm.OWM('6e91084d708cf0dcdabc8e852960d090', config_dict)
+
+
+@app.get("/")
+def print_web():
+	html_content = """
+		<html>
+	<head>
+	<title>Погодный сервис</title>
+	<style>
+		button.knopka {
+		color: #fff; 
+		background: #FFA500; 
+		padding: 5px; 
+		border-radius: 5px;
+		border: 2px solid #FF8247;
+		} 
+		button.knopka:hover { 
+		background: #FF6347; 
+		}
+	</style>
+	</head>
+	<body>
+		<h1>Погодный сервис от Nikel</h1>
+		<table>
+		<tr>
+			<td>
+				<p>Узнать текущую погоду</p>
+				<form action="/v1/current/" method="GET" name="form1">
+					<input name="city" type="text" />
+					<button class="knopka">Перейти сюда</button>
+				</form>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p>Узнать прогноз погоды</p>
+				<form action="/v1/forecast/" method="GET" name="form2">
+					<input name="city" type="text" />
+					<select name="timestamp">
+						<option>Выберите из списка</option>
+						<option>1h</option>
+						<option>3h</option>
+						<option>tomorrow</option>
+						<option>yesterday</option>
+					</select>
+					<button class="knopka">Перейти сюда</button>
+				</form>
+			</td>
+		</tr>
+		</table>
+	</body>
+	</html>
+	"""
+	return HTMLResponse(content=html_content, status_code=200)
 
 @app.get("/v1/current/")
 #city=<name city>
