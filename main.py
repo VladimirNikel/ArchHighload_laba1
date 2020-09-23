@@ -8,6 +8,9 @@ import uvicorn
 #необходимо, чтобы работать с json'ом
 import json
 
+#необходимо для работы с переменными окружения
+import os
+
 #необходимо для работы с API openweathermap
 import pyowm
 from pyowm.utils.config import get_default_config
@@ -17,8 +20,8 @@ config_dict = get_default_config()
 config_dict['language'] = 'ru'
 
 #тут находится ключ с сайта OpenWeatherMap
-#поместить его в переменную окружения
-owm = pyowm.OWM('6e91084d708cf0dcdabc8e852960d090', config_dict)
+app_key = os.environ.get('OWM_APP_KEY')
+owm = pyowm.OWM(app_key, config_dict)
 
 
 @app.get("/")
@@ -113,8 +116,3 @@ def forecast(city: str, timestamp: str):
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
-
-
-
-
